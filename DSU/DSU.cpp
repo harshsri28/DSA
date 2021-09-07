@@ -1,62 +1,32 @@
-void make_set(int v) {
-    parent[v] = v;
-}
-
-//find parent
-int find_set(int v) {
-    if (v == parent[v])
-        return v;
-    return find_set(parent[v]);
-}
-
-//union
-void union_sets(int a, int b) {
-    a = find_set(a);
-    b = find_set(b);
-    if (a != b)
-        parent[b] = a;
-}
-
-//path compression
-int find_set(int v) {
-    if (v == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v]);
-}
-
-
-// union by size
-void make_set(int v) {
-    parent[v] = v;
-    size[v] = 1;
-}
-
-void union_sets(int a, int b) {
-    a = find_set(a);
-    b = find_set(b);
-    if (a != b) {
-        if (size[a] < size[b])
-            swap(a, b);
-        parent[b] = a;
-        size[a] += size[b];
+struct UnionFind {
+    int n;
+    vector<int> rank;
+    vector<int> parent;
+    // store other info as required
+    UnionFind(int n) {
+        rank.resize(n);
+        fill(rank.begin(), rank.end(), 0);
+        parent.resize(n);
+        for (int i = 0; i < n; i++) {
+            parent[i] = i;
+        }
     }
-}
-
-// union by rank
-
-void make_set(int v) {
-    parent[v] = v;
-    rank[v] = 0;
-}
-
-void union_sets(int a, int b) {
-    a = find_set(a);
-    b = find_set(b);
-    if (a != b) {
-        if (rank[a] < rank[b])
-            swap(a, b);
-        parent[b] = a;
-        if (rank[a] == rank[b])
+    int get(int a) {
+        return parent[a] = (parent[a] == a ? a : get(parent[a]));
+    }
+    void merge(int a, int b) {
+        a = get(a);
+        b = get(b);
+        if (a == b) {
+            return;
+        }
+        if (rank[a] == rank[b]) {
             rank[a]++;
+        }
+        if (rank[a] > rank[b]) {
+            parent[b] = a;
+        } else {
+            parent[a] = b;
+        }
     }
-}
+};
