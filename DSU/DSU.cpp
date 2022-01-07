@@ -11,8 +11,12 @@ struct UnionFind {
             parent[i] = i;
         }
     }
-    int get(int a) {
-        return parent[a] = (parent[a] == a ? a : get(parent[a]));
+    int get(int x) {
+        if(parent[x] == x) return x;
+        
+        int temp = get(parent[x]);
+        parent[x] = temp;
+        return temp;
     }
     void merge(int a, int b) {
         a = get(a);
